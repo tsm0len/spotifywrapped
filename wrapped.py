@@ -3,7 +3,7 @@ from tkinter.filedialog import askopenfilename
 
 def wrapped(criteria="minPlayed", byAuthors=False):
 
-    fileName = askopenfilename()
+    fileName = "C:/Users/tomek/Desktop/python/StreamingHistory_music_0.json" #askopenfilename()
 
     f = open(fileName, encoding="utf8")
     text = f.read()
@@ -21,23 +21,31 @@ def wrapped(criteria="minPlayed", byAuthors=False):
         return output
 
     stats = dict(sorted(getData().items(), key=lambda item: item[1][criteria], reverse=True))
+    return stats
 
+def outputStats(stats, byAuthors, places=5):
+    print("===========================================")
     for i, (key, value) in enumerate(stats.items()):
-        if i < 5:
-            print(f"{i+1}. {key} - {value['author']}:")
+        if i < places:
+            if byAuthors:
+                print(f"{i+1}.{value['author']}:")
+            else:
+                print(f"{i+1}. {key} - {value['author']}:")
             print(f"\tMinutes Played: {value['minPlayed']}")
             print(f"\tTimes Played: {value['timesPlayed']}")
             print("===========================================")
         else:
             break
 
+def saveAsFile(stats):
     jsonStats = json.dumps(stats, indent=4)
     with open("wrapped.json", "w") as wrappedFile:
         wrappedFile.write(jsonStats)
-        
-    return stats
 
-criteria = "minPlayed" #minPlayed/timesPlayed
-byAuthors = False
-wrapped(criteria, byAuthors)
+
+criteria = "minPlayed" #minPlayed/timesPlayed (timesPlayed is not as accurate)
+byAuthors = True
+#53387
+stats = wrapped(criteria, byAuthors)
+outputStats(stats, byAuthors)
 print("Done!")
